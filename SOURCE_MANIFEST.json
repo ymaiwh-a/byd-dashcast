@@ -558,8 +558,8 @@
     },
     {
       "path": "phase1/android/app/src/main/AndroidManifest.xml",
-      "bytes": 2769,
-      "sha256": "b5fde4233c73fc26f0c65e92b7c29fe929e7fa0ae7962ccd260fedfe4d7f12e1",
+      "bytes": 3440,
+      "sha256": "016e7df259742ad84f27fad5b541d63e19db6bdbc529d4d7c6ac5469fce3c52a",
       "origin": "phase1/android/app/src/main/AndroidManifest.xml",
       "transformations": []
     },
@@ -754,8 +754,8 @@
     },
     {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ContinuousProjectionTask.java",
-      "bytes": 12034,
-      "sha256": "755fd218f788370714daa34e860aa729fec2c1a983dc9781d3205b810bf034b4",
+      "bytes": 13148,
+      "sha256": "92f58c0af791467414afd7fd04ddac1a960c50000d903a82ce298ae6c7d106db",
       "origin": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ContinuousProjectionTask.java",
       "transformations": []
     },
@@ -1097,8 +1097,8 @@
     },
     {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ProductActivity.kt",
-      "bytes": 19343,
-      "sha256": "72f410678db8d9758a8c7be45382e5fb0d683bfca72b4bcf472abb99f3a0d783",
+      "bytes": 21447,
+      "sha256": "246d7439d11bc861ab23c8568a1515f8f93e61f44766b369261d1a0f1aed7f7e",
       "origin": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ProductActivity.kt",
       "transformations": []
     },
@@ -1390,11 +1390,18 @@
       "transformations": []
     },
     {
+      "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/WidgetApp.java",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 1726,
+      "sha256": "905ffdda1363b7548d61fbe4077425770d61351d4f3ceeaf3bde26c6ac9c9500"
+    },
+    {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/WidgetService.java",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 4985,
-      "sha256": "173b31834cc7a6932fc73c357e162104ece1a4e8073cbaa3eb86ab38711fe945"
+      "bytes": 5062,
+      "sha256": "86eeb276831da7293ec1cfd0bdd55e193280c50314b6b8a68b5d0249246d318f"
     },
     {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ncm/LogHub.java",

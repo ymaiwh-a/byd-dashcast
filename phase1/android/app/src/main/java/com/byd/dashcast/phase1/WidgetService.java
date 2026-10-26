@@ -75,6 +75,7 @@ public final class WidgetService extends Service {
             NcmSessionHub.acquire(this);
             held = true;
             LogHub.i("widget", "WIDGET_SESSION_ACQUIRED");
+            com.byd.dashcast.phase1.widget.ClusterState.get().refresh(null);
         } catch (IOException | RuntimeException error) {
             LogHub.w("widget", "WIDGET_SESSION_OPEN_FAILED " + error);
             if (receiverRegistered) {

@@ -69,6 +69,8 @@ final class ContinuousProjectionTask implements ProjectionSessionController.Task
         boolean captureAttempted = false;
         String mirrorTicket = null;
         IOException[] receiverFailure = {null};
+        boolean hidNav = false;
+        boolean hidMusic = false;
         try {
             LogHub.banner("CONTINUOUS_VIDEO_ATTEMPT " + System.currentTimeMillis() + " seconds=" + seconds);
             if (stop.get()) {
@@ -76,6 +78,16 @@ final class ContinuousProjectionTask implements ProjectionSessionController.Task
             }
             session = NcmSessionHub.acquire(context);
             session.observePhysicalDetach(physicallyDetached::get);
+            hidNav = com.byd.dashcast.phase1.widget.Prefs.castHideNav();
+            hidMusic = com.byd.dashcast.phase1.widget.Prefs.castHideLyric();
+            if (hidNav) {
+                com.byd.dashcast.phase1.widget.WidgetRelay.get().setNavHiddenByCast(true);
+                LogHub.i("widget", "投屏开始联动：已临时隐藏简易地图");
+            }
+            if (hidMusic) {
+                com.byd.dashcast.phase1.widget.WidgetRelay.get().setMusicHiddenByCast(true);
+                LogHub.i("widget", "投屏开始联动：已临时隐藏仪表歌词");
+            }
             client = new NoAuthVideoClient(session::connect, abort, log::accept, true);
             if (ContinuousSessionPolicy.unlimited(seconds)) { client.enableUnlimitedStream(); }
             if (productComposition) {
@@ -176,6 +188,14 @@ final class ContinuousProjectionTask implements ProjectionSessionController.Task
         } catch (IOException | RuntimeException error) {
             failure = new IOException("Continuous projection failed: " + error, error);
         } finally {
+            if (hidNav) {
+                com.byd.dashcast.phase1.widget.WidgetRelay.get().setNavHiddenByCast(false);
+                LogHub.i("widget", "投屏结束联动：按意图恢复简易地图显示");
+            }
+            if (hidMusic) {
+                com.byd.dashcast.phase1.widget.WidgetRelay.get().setMusicHiddenByCast(false);
+                LogHub.i("widget", "投屏结束联动：按意图恢复仪表歌词显示");
+            }
             MirrorBridge.end(mirrorTicket);
             log.accept(frameRateGate.statistics());
             log.accept(framePacer.statistics());

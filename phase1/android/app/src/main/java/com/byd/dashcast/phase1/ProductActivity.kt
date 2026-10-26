@@ -2,6 +2,7 @@ package com.byd.dashcast.phase1
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.ComponentName
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
@@ -19,6 +20,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
+import android.widget.Toast
+import com.byd.dashcast.phase1.widget.ClusterState
+import com.byd.dashcast.phase1.widget.MusicListener
+import com.byd.dashcast.phase1.widget.WidgetRelay
 
 /** Product launcher, implemented in Kotlin. Engineering tools are an explicit diagnostics-only route.
  * @author Codex
@@ -52,6 +57,7 @@ class ProductActivity : Activity() {
         apps = ProductAppCatalog.load(this)
         page = savedInstanceState?.getInt("page") ?: 0
         build()
+        if (ClusterState.get().navIntent || ClusterState.get().musicIntent) { WidgetService.start(this) }
         if (!settings.setupComplete) { firstRun() }
     }
 
@@ -175,6 +181,24 @@ class ProductActivity : Activity() {
 
     private fun preferences() {
         card {
+            addView(text("仪表组件", 23, true))
+            addView(toggle("简易导航", ClusterState.get().navIntent) { selected ->
+                ClusterState.get().setNavIntent(selected)
+                WidgetRelay.get().setNavEnabled(selected)
+                Toast.makeText(this@ProductActivity, if (selected) "导航已开启" else "导航已关闭", Toast.LENGTH_SHORT).show()
+                syncWidgetService()
+            })
+            addView(toggle("仪表歌词", ClusterState.get().musicIntent) { selected ->
+                ClusterState.get().setMusicIntent(selected)
+                WidgetRelay.get().setMusicEnabled(selected)
+                Toast.makeText(this@ProductActivity, if (selected) "歌词已开启" else "歌词已关闭", Toast.LENGTH_SHORT).show()
+                if (selected && !notificationAccessGranted()) {
+                    Toast.makeText(this@ProductActivity, "未授予通知权限，歌词可能为空", Toast.LENGTH_SHORT).show()
+                }
+                syncWidgetService()
+            })
+        }
+        card {
             addView(text("画面与外观", 26, true))
             addView(toggle("导航仪表布局：顶部状态、中央地图、底部数据", settings.underlay) { settings.underlay = it })
             addView(text("开启：曲边梯形全幅，1792×432视频承载区、1408×352保守安全区；关闭：768×432外窗、720×384有效内框。四角随曲边淡出，不拉伸画面。需配套RWV7仪表 App；普通车模/静态路面让位，真实告警保留。", 16))
@@ -291,4 +315,19 @@ class ProductActivity : Activity() {
     }
     private fun shape(color: Int) = GradientDrawable().apply { setColor(color); cornerRadius = dp(14).toFloat() }
     private fun dp(value: Int) = (resources.displayMetrics.density * value).toInt()
+    private fun syncWidgetService() {
+        val cs = ClusterState.get()
+        if (cs.navIntent || cs.musicIntent) { WidgetService.start(this) } else { WidgetService.stop(this) }
+    }
+    private fun notificationAccessGranted(): Boolean {
+        return try {
+            val cur = android.provider.Settings.Secure.getString(contentResolver,
+                "enabled_notification_listeners")
+            if (cur.isNullOrEmpty() || cur == "null") false
+            else cur.split(":").any {
+                val cn = ComponentName.unflattenFromString(it)
+                cn != null && cn == ComponentName(this, MusicListener::class.java)
+            }
+        } catch (error: Exception) { false }
+    }
 }
