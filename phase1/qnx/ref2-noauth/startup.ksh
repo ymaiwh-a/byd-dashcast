@@ -27,5 +27,16 @@ if [ -f "$BASE/instrument-receiver" ] && [ -f "$BASE/run-cast.ksh" ] && [ -f "$B
         echo DCV1_COPY_FAILED
     fi
 fi
+if [ -f "$BASE/widgetd" ] && [ -f "$BASE/run-widgetd.ksh" ]; then
+    if cp "$BASE/widgetd" "$RUN/widgetd" &&
+       cp "$BASE/run-widgetd.ksh" "$RUN/run-widgetd.ksh" &&
+       chmod 700 "$RUN/widgetd" "$RUN/run-widgetd.ksh"; then
+        echo WD_FILES_READY
+        "$RUN/run-widgetd.ksh" &
+    else
+        rm -f "$RUN/widgetd" "$RUN/run-widgetd.ksh"
+        echo WD_COPY_FAILED
+    fi
+fi
 unset SOCK || :
 exec "$RUN/instrument-usb" --serve "$RUN/usb-mode.ksh"

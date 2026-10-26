@@ -2460,6 +2460,13 @@
       "transformations": []
     },
     {
+      "path": "phase1/qnx/ref2-noauth/run-widgetd.ksh",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 892,
+      "sha256": "62780b7de0713526cb9f45f0265ae3cc99c101409097c0e6f721c88e3ab502dc"
+    },
+    {
       "path": "phase1/qnx/ref2-noauth/startup-background-poc.ksh",
       "bytes": 1664,
       "sha256": "10af0bacfa4b797f57b4b88f986114a79ddceb029f87da0a322e80ae92f2fd9b",
@@ -2468,8 +2475,8 @@
     },
     {
       "path": "phase1/qnx/ref2-noauth/startup.ksh",
-      "bytes": 1268,
-      "sha256": "dcc08669bdef4077196019df5956a45f7b29abc70860e40f71f8c2c81079a6f4",
+      "bytes": 1659,
+      "sha256": "dc1f00dbeb98b9fa67c99d3dfadac8c8feef152f5442a4318625e4bf99721698",
       "origin": "phase1/qnx/ref2-noauth/startup.ksh",
       "transformations": []
     },
@@ -2514,6 +2521,34 @@
       "sha256": "9baebd17211f574ca4c6a287aada3396fe8ed4e8b8bc6cbb98cb1e32db2416e6",
       "origin": "phase1/qnx/ref2-noauth/usb-mode.ksh",
       "transformations": []
+    },
+    {
+      "path": "phase1/qnx/widgetd/tests/widgetd_test.c",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 28382,
+      "sha256": "f40587357d7785bf38cdaba8ceaeab257aaf56a9f37f78d076e6ce2355465faf"
+    },
+    {
+      "path": "phase1/qnx/widgetd/widgetd.c",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 78817,
+      "sha256": "2b5249af489544afe3ccec86d85885ddb1cae7ce82aea192929b794201aa188c"
+    },
+    {
+      "path": "phase1/qnx/widgetd/widgetd.h",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 4515,
+      "sha256": "f56655120e6c8b5afd264f505b3dcca66e7f690fd099d65a4d98977f062cbd83"
+    },
+    {
+      "path": "phase1/qnx/widgetd/widgetd_main.c",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 7689,
+      "sha256": "f5805324657770941f18d5bb1cf45c5d783e2c99591518834aa45c2e0e1b4467"
     },
     {
       "path": "requirements-native.txt",
@@ -2647,6 +2682,13 @@
       "sha256": "7fc24820cf3388cf901fd25e6ce23a5a0cda804e41b3becdc3be12fa14dddf0d",
       "origin": "publication/template/tools/test_native_background.py",
       "transformations": []
+    },
+    {
+      "path": "tools/test_widgetd.py",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 3072,
+      "sha256": "4bb4c5d9836bc82ad1a4bed8c13408397074d9c57278673cfdea6717df0d306a"
     },
     {
       "path": "tools/tests/test_background_overlay_cli.py",
