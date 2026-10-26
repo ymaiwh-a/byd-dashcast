@@ -62,8 +62,8 @@
     },
     {
       "path": "CHANGELOG.md",
-      "bytes": 27239,
-      "sha256": "3cc696876cdc3397537bfca754d43568e58d8978f67f0336cab14b7610f947ba",
+      "bytes": 28313,
+      "sha256": "6a7bfcda52680039778506f2c1e05ed097ae10e6c192aff7987f42925703227b",
       "origin": "publication/template/CHANGELOG.md",
       "transformations": []
     },
@@ -83,8 +83,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4628,
-      "sha256": "4bbbe12a79c8483c9adda1bad02881aa403eeaa9092a62bf5216b5b86cf13a2b",
+      "bytes": 4957,
+      "sha256": "5bdc17aa16a153af770ee4420acc3738dd126b62ecd11558bdcec1ba65813132",
       "origin": "publication/template/README.md",
       "transformations": []
     },
@@ -326,6 +326,13 @@
       "transformations": []
     },
     {
+      "path": "docs/PRODUCT_1.12.0.md",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 3404,
+      "sha256": "be1f15512859d6c683414414423cfe9d755b274eb51f84bf0d16a72ad75abfe5"
+    },
+    {
       "path": "docs/PRODUCT_1.2.0.md",
       "bytes": 2876,
       "sha256": "155d916a1c95c21ebdcec22968c2af3190a278abcfa402f8779358d0c40991cf",
@@ -545,7 +552,7 @@
     {
       "path": "phase1/android/app/build.gradle",
       "bytes": 1107,
-      "sha256": "d07ea7d103d0be22cb9472ebbe49d2b16dc314a658bfcccde96c56c15862a7ae",
+      "sha256": "a545fcc14b7eaa01efaa5da715dc2007f0133811876c45b73324d0dac30d3c0a",
       "origin": "phase1/android/app/build.gradle",
       "transformations": []
     },
