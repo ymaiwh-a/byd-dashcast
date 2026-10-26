@@ -47,6 +47,11 @@
             android:exported="false"
             android:stopWithTask="false"
             android:foregroundServiceType="connectedDevice" />
+        <service
+            android:name=".WidgetService"
+            android:exported="false"
+            android:stopWithTask="false"
+            android:foregroundServiceType="connectedDevice" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />

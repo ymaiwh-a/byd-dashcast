@@ -24,4 +24,8 @@
     <string name="projection_notification_title">仪表持续投屏运行中</string>
     <string name="projection_notification_text">独立导航运行中；停止或恢复U盘模式可在应用内完成，无需拔线</string>
     <string name="projection_notification_stop">停止投屏</string>
+    <string name="widget_channel">仪表导航歌词</string>
+    <string name="widget_notification_title">仪表导航歌词运行中</string>
+    <string name="widget_notification_text">导航与歌词服务运行中；停止可在应用内完成，无需拔线</string>
+    <string name="widget_notification_stop">停止服务</string>
 </resources>

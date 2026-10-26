@@ -750,25 +750,29 @@ public final class MainActivity extends Activity {
 
     private void performBackgroundPoc() throws IOException {
         int nonce = new SecureRandom().nextInt(Integer.MAX_VALUE - 1) + 1;
-        try (UsbNcmSession session = UsbNcmSession.open(this, cancelled);
-                NoAuthVideoTransport channel = session.connect(NoAuthVideoProtocol.PORT, cancelled)) {
+        UsbNcmSession session = NcmSessionHub.acquire(this);
+        try (NoAuthVideoTransport channel = session.connect(NoAuthVideoProtocol.PORT, cancelled)) {
             NoAuthVideoProtocol.validateOffer(channel.readExact(NoAuthVideoProtocol.HEADER_BYTES),
                     channel.readExact(NoAuthVideoProtocol.OFFER_BYTES));
             new InstrumentBackgroundPoc(cancelled, this::appendLog, nonce).run(channel);
             appendLog(session.statistics());
+        } finally {
+            NcmSessionHub.release();
         }
         appendLog("背景测试连接已释放。请人工确认原厂背景恢复，再测试小窗视频；最后一键导出到下载目录。");
     }
 
     private void performDisplayReadback() throws IOException {
-        try (UsbNcmSession session = UsbNcmSession.open(this, cancelled);
-                NoAuthVideoTransport channel = session.connect(NoAuthVideoProtocol.PORT, cancelled)) {
+        UsbNcmSession session = NcmSessionHub.acquire(this);
+        try (NoAuthVideoTransport channel = session.connect(NoAuthVideoProtocol.PORT, cancelled)) {
             NoAuthVideoProtocol.validateOffer(channel.readExact(NoAuthVideoProtocol.HEADER_BYTES),
                     channel.readExact(NoAuthVideoProtocol.OFFER_BYTES));
             InstrumentDisplayProbe probe = new InstrumentDisplayProbe(cancelled, this::appendLog);
             probe.negotiate(channel);
             probe.run(channel);
             appendLog(session.statistics());
+        } finally {
+            NcmSessionHub.release();
         }
         appendLog("F1只读连接已退出；未创建视频/未切模式。属性采样不等于全屏或安全验收。");
     }
@@ -778,8 +782,8 @@ public final class MainActivity extends Activity {
                 + " screenCapture=" + screenCapture + "; prior attempts retained");
         File sample = new File(getCacheDir(), "reference_video_" + System.currentTimeMillis() + ".ts");
         lastTsFile = sample;
-        try (UsbNcmSession session = UsbNcmSession.open(this, cancelled);
-                OutputStream output = new BufferedOutputStream(new FileOutputStream(sample));
+        UsbNcmSession session = NcmSessionHub.acquire(this);
+        try (OutputStream output = new BufferedOutputStream(new FileOutputStream(sample));
                 NoAuthVideoClient client = new NoAuthVideoClient(session::connect, cancelled, this::appendLog)) {
             if (displayReadback) {
                 client.enableDisplayReadback();
@@ -827,6 +831,7 @@ public final class MainActivity extends Activity {
                 appendLog(session.statistics());
             }
         } finally {
+            NcmSessionHub.release();
             appendLog("NCM diagnostics saved for export. If the window did not clear, stop testing.");
         }
         appendLog("Protocol session ended with receiver window/cleanup reports; instrument picture and safety"

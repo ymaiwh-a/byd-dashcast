@@ -308,30 +308,33 @@ internal class ProductController private constructor(context: Context) {
         val gate = UsbOperationGate.acquire() ?: throw IOException("USB_BUSY: 本地清理尚未结束")
         gate.use {
             val cancellation = AtomicBoolean()
-            val session = try { UsbNcmSession.open(app, cancellation) } catch (error: Exception) {
+            val session = try { NcmSessionHub.acquire(app) } catch (error: Exception) {
                 if (DetachedPeerRecovery.localCleanupUnconfirmed(error)) {
                     quarantine("CLEANUP_UNCONFIRMED recovery open: $error")
                 }
                 throw error
             }
+            var closed = false
             try {
-                session.use {
-                    session.connectRecovery(cancellation).use { channel ->
-                        DetachedPeerRecovery.verifyAwaitIdle(channel, { Thread.sleep(100) }, System::nanoTime)
-                    }
+                session.connectRecovery(cancellation).use { channel ->
+                    DetachedPeerRecovery.verifyAwaitIdle(channel, { Thread.sleep(100) }, System::nanoTime)
+                }
+                closed = true
+                if (!NcmSessionHub.release()) {
+                    quarantine("CLEANUP_UNCONFIRMED recovery local resources")
+                    throw IOException("CLEANUP_UNCONFIRMED recovery local resources")
                 }
             } catch (error: Exception) {
-                if (!session.localResourcesClosed()) {
-                    quarantine("CLEANUP_UNCONFIRMED recovery local resources: $error")
-                } else {
-                    ProjectionService.notePeerRecoveryFailure(expected, "PEER_RECOVERY_NOT_CONFIRMED: ${error.message}")
-                    rememberIncident(expected, "PEER_RECOVERY_NOT_CONFIRMED: ${error.message}")
+                if (!closed) {
+                    closed = true
+                    if (!NcmSessionHub.release()) {
+                        quarantine("CLEANUP_UNCONFIRMED recovery local resources: $error")
+                    } else {
+                        ProjectionService.notePeerRecoveryFailure(expected, "PEER_RECOVERY_NOT_CONFIRMED: ${error.message}")
+                        rememberIncident(expected, "PEER_RECOVERY_NOT_CONFIRMED: ${error.message}")
+                    }
                 }
                 throw error
-            }
-            if (!session.localResourcesClosed()) {
-                quarantine("CLEANUP_UNCONFIRMED recovery local resources")
-                throw IOException("CLEANUP_UNCONFIRMED recovery local resources")
             }
             ProjectionService.confirmPeerRecovery(expected)
             log("PRODUCT_DETACHED_RECOVERY_CONFIRMED read_only=true; no media START or CAN command sent by recovery")

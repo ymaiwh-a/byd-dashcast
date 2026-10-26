@@ -65,6 +65,7 @@ final class ContinuousProjectionTask implements ProjectionSessionController.Task
         FramePacer framePacer = new FramePacer(NoAuthVideoProtocol.FPS);
         IOException failure = null;
         boolean usbClean = true;
+        boolean hubClosed = true;
         boolean captureAttempted = false;
         String mirrorTicket = null;
         IOException[] receiverFailure = {null};
@@ -73,7 +74,7 @@ final class ContinuousProjectionTask implements ProjectionSessionController.Task
             if (stop.get()) {
                 return;
             }
-            session = UsbNcmSession.open(context, abort);
+            session = NcmSessionHub.acquire(context);
             session.observePhysicalDetach(physicallyDetached::get);
             client = new NoAuthVideoClient(session::connect, abort, log::accept, true);
             if (ContinuousSessionPolicy.unlimited(seconds)) { client.enableUnlimitedStream(); }
@@ -192,8 +193,11 @@ final class ContinuousProjectionTask implements ProjectionSessionController.Task
                     log.accept(session.statistics());
                 } finally {
                     try {
-                        if (physicallyDetached.get()) { session.closeDetached(); }
-                        else { session.close(); }
+                        if (physicallyDetached.get()) {
+                            NcmSessionHub.releaseDetached();
+                        } else {
+                            hubClosed = NcmSessionHub.release();
+                        }
                     } catch (IOException | RuntimeException error) {
                         usbClean = false;
                         failure = collect(failure, error);
@@ -203,7 +207,7 @@ final class ContinuousProjectionTask implements ProjectionSessionController.Task
         }
         boolean captureClean = !captureAttempted || source != null && source.exitConfirmed();
         boolean receiverClean = client == null || client.cleanupConfirmed();
-        boolean localUsbClosed = usbClean && (session == null || session.localResourcesClosed());
+        boolean localUsbClosed = usbClean && (session == null || hubClosed);
         boolean partialOpenUnknown = session == null && openCleanupUnconfirmed(failure);
         if (physicallyDetached.get() && captureClean && localUsbClosed && !partialOpenUnknown) {
             log.accept("PHYSICAL_DETACH_LOCAL_CLEANUP_CONFIRMED; read-only peer recovery required after reconnect");

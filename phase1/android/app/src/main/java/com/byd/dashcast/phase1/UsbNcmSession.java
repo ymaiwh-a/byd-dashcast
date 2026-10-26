@@ -139,6 +139,10 @@ public final class UsbNcmSession implements Closeable {
                 + " invalid=" + ncm.rxBadNtb + " txErrors=" + ncm.txErr + " dropped=" + ncm.txDrop;
     }
 
+    public Net net() {
+        return network;
+    }
+
     @Override
     public void close() throws IOException {
         network.stop();
