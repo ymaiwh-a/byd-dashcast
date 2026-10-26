@@ -941,7 +941,7 @@ static bool config_load(WdCore *core, int channel) {
     return true;
 }
 
-static bool b64_decode(const char *in, size_t len, size_t *out_bytes) {
+static const signed char *b64_table(void) {
     static signed char tbl[256];
     static bool ready;
     if (!ready) {
@@ -951,6 +951,11 @@ static bool b64_decode(const char *in, size_t len, size_t *out_bytes) {
         for (int i = 0; i < 64; i++) tbl[(unsigned char)alpha[i]] = (signed char)i;
         ready = true;
     }
+    return tbl;
+}
+
+static bool b64_decode(const char *in, size_t len, size_t *out_bytes) {
+    const signed char *tbl = b64_table();
     if (len % 4 != 0) return false;
     size_t pad = 0;
     if (len >= 1 && in[len - 1] == '=') pad++;
@@ -964,6 +969,41 @@ static bool b64_decode(const char *in, size_t len, size_t *out_bytes) {
     if (rem == 1) return false;
     *out_bytes = body / 4 * 3 + (rem == 2 ? 1 : (rem == 3 ? 2 : 0));
     return true;
+}
+
+static bool b64_decode_into(const char *in, size_t len, uint8_t *out, size_t out_cap,
+                            size_t *out_bytes) {
+    size_t bytes = 0;
+    if (!b64_decode(in, len, &bytes)) return false;
+    if (bytes > out_cap) return false;
+    const signed char *tbl = b64_table();
+    size_t body = len;
+    while (body > 0 && in[body - 1u] == '=') body--;
+    size_t o = 0;
+    size_t i = 0;
+    for (; i + 4u <= body; i += 4u) {
+        uint32_t v = ((uint32_t)(uint8_t)tbl[(unsigned char)in[i]] << 18)
+            | ((uint32_t)(uint8_t)tbl[(unsigned char)in[i + 1u]] << 12)
+            | ((uint32_t)(uint8_t)tbl[(unsigned char)in[i + 2u]] << 6)
+            | (uint32_t)(uint8_t)tbl[(unsigned char)in[i + 3u]];
+        out[o++] = (uint8_t)(v >> 16);
+        out[o++] = (uint8_t)(v >> 8);
+        out[o++] = (uint8_t)v;
+    }
+    size_t rem = body - i;
+    if (rem == 2u) {
+        uint32_t v = ((uint32_t)(uint8_t)tbl[(unsigned char)in[i]] << 2)
+            | ((uint32_t)(uint8_t)tbl[(unsigned char)in[i + 1u]] >> 4);
+        out[o++] = (uint8_t)v;
+    } else if (rem == 3u) {
+        uint32_t v = ((uint32_t)(uint8_t)tbl[(unsigned char)in[i]] << 10)
+            | ((uint32_t)(uint8_t)tbl[(unsigned char)in[i + 1u]] << 4)
+            | ((uint32_t)(uint8_t)tbl[(unsigned char)in[i + 2u]] >> 2);
+        out[o++] = (uint8_t)(v >> 8);
+        out[o++] = (uint8_t)v;
+    }
+    *out_bytes = o;
+    return o == bytes;
 }
 
 static bool check_whitelist(const WdParser *p, const WdJson *obj, const char *const *keys,
@@ -1410,6 +1450,30 @@ static const char *handle_track_load(WdCore *core, const WdJson *root, WdOut *o)
         if (ch != NULL) {
             if (ch->type != WD_T_INT || ch->i < 0) return "invalid_range_or_type";
         }
+        int pw = 0;
+        int ph = 0;
+        if (cw != NULL && ch != NULL && cw->i > 0 && ch->i > 0 && cw->i <= 4096 && ch->i <= 4096
+            && (uint64_t)cw->i * (uint64_t)ch->i * 4u == (uint64_t)bytes) {
+            if (core->cover_cap < bytes) {
+                uint8_t *nb = realloc(core->cover_px, bytes);
+                if (nb != NULL) {
+                    core->cover_px = nb;
+                    core->cover_cap = bytes;
+                }
+            }
+            size_t got = 0;
+            if (core->cover_cap >= bytes
+                && b64_decode_into(cover->s, cover->len, core->cover_px, core->cover_cap, &got)
+                && got == bytes) {
+                pw = (int)cw->i;
+                ph = (int)ch->i;
+            }
+        }
+        core->cover_w = pw;
+        core->cover_h = ph;
+    } else {
+        core->cover_w = 0;
+        core->cover_h = 0;
     }
     int64_t ttl = core->music_cfg.ttl_ms;
     if (ttl <= 0) ttl = 20000;
@@ -2091,4 +2155,9 @@ void wd_shutdown(WdCore *core) {
     free(core->parser.str_pool);
     core->parser.pool = NULL;
     core->parser.str_pool = NULL;
+    free(core->cover_px);
+    core->cover_px = NULL;
+    core->cover_cap = 0;
+    core->cover_w = 0;
+    core->cover_h = 0;
 }

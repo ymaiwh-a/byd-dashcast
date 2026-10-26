@@ -1,5 +1,10 @@
 #include "widgetd.h"
 
+#include "wd_canvas.h"
+#include "wd_font.h"
+#include "wd_render.h"
+#include "wd_screen.h"
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <netinet/in.h>
@@ -34,39 +39,13 @@ static uint64_t wd_now_ms(void) {
     return (uint64_t)ts.tv_sec * 1000u + (uint64_t)(ts.tv_nsec / 1000000L);
 }
 
-static bool stub_nav_render(void *context, const WdNavFrame *frame) {
-    (void)context;
-    fprintf(stderr, "WD_NAV_RENDER road=%s turn=%s lights=%s lanes=%s\n", frame->current_road,
-            frame->turn, frame->lights_json, frame->lanes_json);
-    return true;
+static bool main_theme_day(void *context, int *day) {
+    return wd_screen_theme_day(context, day);
 }
 
-static void stub_nav_hide(void *context) {
-    (void)context;
-    fprintf(stderr, "WD_NAV_HIDE\n");
-}
-
-static bool stub_music_render(void *context, const WdMusicFrame *frame) {
-    (void)context;
-    fprintf(stderr, "WD_MUSIC_RENDER track=%s title=%s lines=%d index=%d\n", frame->track_id,
-            frame->title, frame->line_count, frame->line_index);
-    return true;
-}
-
-static void stub_music_hide(void *context) {
-    (void)context;
-    fprintf(stderr, "WD_MUSIC_HIDE\n");
-}
-
-static void stub_music_line(void *context, int line_index) {
-    (void)context;
-    fprintf(stderr, "WD_MUSIC_LINE %d\n", line_index);
-}
-
-static bool stub_theme_day(void *context, int *day) {
-    (void)context;
-    (void)day;
-    return false;
+static void main_font_destroy(WdFont *font, bool is_ft) {
+    if (is_ft) wd_font_freetype_destroy(font);
+    else wd_font_fake_destroy(font);
 }
 
 static int wd_make_listener(int port) {
@@ -179,13 +158,51 @@ int main(int argc, char **argv) {
         }
     }
     signal(SIGPIPE, SIG_IGN);
-    const WdPort port = {NULL, stub_nav_render, stub_nav_hide, stub_music_render, stub_music_hide,
-                         stub_music_line, stub_theme_day};
     WdCore core;
-    if (!wd_init(&core, &config, &port)) {
+    WdPort empty_port;
+    memset(&empty_port, 0, sizeof(empty_port));
+    if (!wd_init(&core, &config, &empty_port)) {
         fprintf(stderr, "WD_INIT_FAILED\n");
         return 1;
     }
+    static const char *const FONT_PATHS[] = {
+        "/base/usr/share/fonts/msyh.ttf",
+        "/base/app/rc_hmi/Resource_Font/msyh.ttf",
+        "msyhbd.ttf"
+    };
+    WdFont *font = wd_font_freetype_create(FONT_PATHS, 3);
+    bool font_is_ft = font != NULL;
+    if (font == NULL) font = wd_font_fake_create();
+    if (font == NULL) {
+        fprintf(stderr, "WD_FONT_INIT_FAILED\n");
+        wd_shutdown(&core);
+        return 1;
+    }
+    WdScreen *nav_screen = wd_screen_create("nav", WD_NAV_W, WD_NAV_H);
+    WdScreen *music_screen = wd_screen_create("music", WD_NAV_W, WD_NAV_H);
+    WdSurface nav_surface;
+    WdSurface music_surface;
+    bool nav_ok = nav_screen != NULL && wd_screen_surface(nav_screen, &nav_surface);
+    bool music_ok = music_screen != NULL && wd_screen_surface(music_screen, &music_surface);
+    if (!nav_ok) memset(&nav_surface, 0, sizeof(nav_surface));
+    if (!music_ok) memset(&music_surface, 0, sizeof(music_surface));
+    WdRender *render = wd_render_create(&core, &nav_surface, &music_surface, font,
+                                        main_theme_day, nav_screen);
+    if (render == NULL) {
+        fprintf(stderr, "WD_RENDER_INIT_FAILED\n");
+        wd_screen_destroy(nav_screen);
+        wd_screen_destroy(music_screen);
+        main_font_destroy(font, font_is_ft);
+        wd_shutdown(&core);
+        return 1;
+    }
+    core.port = wd_render_port(render);
+    int last_nav_x = -1;
+    int last_nav_y = -1;
+    int last_nav_op = -1;
+    int last_music_x = -1;
+    int last_music_y = -1;
+    int last_music_op = -1;
     int listen_fd[3];
     listen_fd[WD_CHANNEL_HMI] = wd_make_listener(WD_PORT_HMI);
     listen_fd[WD_CHANNEL_NAV] = wd_make_listener(WD_PORT_NAV);
@@ -194,6 +211,10 @@ int main(int argc, char **argv) {
         if (listen_fd[i] < 0) {
             fprintf(stderr, "WD_LISTEN_FAILED port=%d errno=%d\n", 31770 + i, errno);
             for (int j = 0; j < i; j++) close(listen_fd[j]);
+            wd_render_destroy(render);
+            wd_screen_destroy(nav_screen);
+            wd_screen_destroy(music_screen);
+            main_font_destroy(font, font_is_ft);
             wd_shutdown(&core);
             return 1;
         }
@@ -209,6 +230,10 @@ int main(int argc, char **argv) {
     if (reply == NULL) {
         fprintf(stderr, "WD_REPLY_ALLOC_FAILED\n");
         for (int i = 0; i < 3; i++) close(listen_fd[i]);
+        wd_render_destroy(render);
+        wd_screen_destroy(nav_screen);
+        wd_screen_destroy(music_screen);
+        main_font_destroy(font, font_is_ft);
         wd_shutdown(&core);
         return 1;
     }
@@ -242,5 +267,23 @@ int main(int argc, char **argv) {
             }
         }
         wd_tick(&core, wd_now_ms());
+        if (nav_screen != NULL
+            && (core.nav_cfg.x != last_nav_x || core.nav_cfg.y != last_nav_y
+                || core.nav_cfg.opacity != last_nav_op)) {
+            wd_screen_set_geometry(nav_screen, core.nav_cfg.x, core.nav_cfg.y,
+                                   core.nav_cfg.opacity);
+            last_nav_x = core.nav_cfg.x;
+            last_nav_y = core.nav_cfg.y;
+            last_nav_op = core.nav_cfg.opacity;
+        }
+        if (music_screen != NULL
+            && (core.music_cfg.x != last_music_x || core.music_cfg.y != last_music_y
+                || core.music_cfg.opacity != last_music_op)) {
+            wd_screen_set_geometry(music_screen, core.music_cfg.x, core.music_cfg.y,
+                                   core.music_cfg.opacity);
+            last_music_x = core.music_cfg.x;
+            last_music_y = core.music_cfg.y;
+            last_music_op = core.music_cfg.opacity;
+        }
     }
 }

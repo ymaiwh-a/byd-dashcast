@@ -2,7 +2,7 @@
 
 ## 根因与实现
 
-1. 实车验证过的「简易导航+歌词」链路在仪表侧的接收端原是固件反编译提取的 `overlay-service` 二进制，仓库纪律禁止提交提取 ELF/固件原件，且去鉴权需要仪表端配合改动。因此仪表端以可移植 C99 源码重写独立守护进程 `widgetd`，不依赖任何固件二进制；老仪表已在跑的守护端口（47785-47787）保持原样、不改动、不依赖。
+1. 实车验证过的「简易导航+歌词」链路在仪表侧的接收端原是固件反编译提取的 `overlay-service` 二进制，仓库纪律禁止提交提取 ELF/固件原件，且去鉴权需要仪表端配合改动。因此仪表端以可移植 C99 源码重写独立守护进程 `widgetd`。
 2. app 侧采集/中继层逐行移植实车实现：导航广播（高德/百度/WeCar）、定制地图 autosdk 服务 1 秒轮询、歌词广播+MediaSession 轮询+NotificationListenerService 通知采集、在线歌词/封面拉取；组包 OP 字符串与 JSON 字段名与实车实现逐字符一致。协议零鉴权：三条通道一律不带 token、不带 KEY、不做任何校验，只考虑稳定性。
 3. 传输换底到本仓库 NCM 用户态栈：`NcmSessionHub` 引用计数共享单一 `UsbNcmSession`（USB 独占打开，widget 通道与视频 DCV1 通道共享同一会话），`WidgetService` 前台服务持有会话使导航/歌词在未投屏时可独立工作。三通道端口定版 31770（hmi）/31771（navigation）/31772（music），仪表侧监听 192.168.77.1。
 4. `widgetd` 并入现有 `dip-instrument` 模块启动链（`startup.ksh` 校验+拷贝，与 instrument-receiver 同等流程），owner wrapper 有界重启+单实例锁；JSON 行帧、OP 路由、`ttl_ms` 租约过期自动让位、配置原子持久化；渲染层为注入式 port 接口，主机测试用 fake port，Screen/字体后端在目标阶段接入。

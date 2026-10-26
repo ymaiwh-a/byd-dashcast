@@ -198,6 +198,10 @@ typedef struct {
     uint64_t last_now;
     bool nav_lease_live;
     bool music_lease_live;
+    uint8_t *cover_px;
+    int cover_w;
+    int cover_h;
+    size_t cover_cap;
 } WdCore;
 
 bool wd_init(WdCore *core, const WdConfig *config, const WdPort *port);
