@@ -39,6 +39,24 @@ public final class LogHub {
                 + ": " + error.getMessage());
     }
 
+    private static final java.util.Map<String, Long> THROTTLE = new java.util.HashMap<String, Long>();
+
+    public static boolean oncePer(String key, long ms) {
+        long now = System.currentTimeMillis();
+        synchronized (LINES) {
+            Long prev = THROTTLE.get(key);
+            if (prev != null && now - prev < ms) return false;
+            THROTTLE.put(key, now);
+            return true;
+        }
+    }
+
+    public static String brief(String raw) {
+        if (raw == null) return "";
+        String s = raw.replace('\n', ' ').replace('\r', ' ').trim();
+        return s.length() > 400 ? s.substring(0, 400) + "…" : s;
+    }
+
     public static synchronized String snapshot() {
         StringBuilder result = new StringBuilder();
         for (String line : LINES) {
@@ -49,6 +67,7 @@ public final class LogHub {
 
     public static synchronized void clear() {
         LINES.clear();
+        THROTTLE.clear();
     }
 
     private static synchronized void write(String level, String tag, String message) {
