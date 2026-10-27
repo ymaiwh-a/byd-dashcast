@@ -541,11 +541,11 @@ static void config_get_defaults(void) {
     has(r, "\"storage_error\":null");
     r = req(WD_CHANNEL_MUSIC, "{\"op\":\"config.get\"}");
     is_ok(r);
-    has(r, "\"x\":1080");
+    has(r, "\"x\":1200");
     has(r, "\"lyric_lines\":3");
-    has(r, "\"font_size\":26");
+    has(r, "\"font_size\":23");
     has(r, "\"music_layout\":2");
-    has(r, "\"cover_size\":200");
+    has(r, "\"cover_size\":120");
     has(r, "\"style\":{\"lyric_lines\":3");
 }
 

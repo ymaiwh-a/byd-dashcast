@@ -179,10 +179,12 @@ static void load_track(const char *fields) {
 }
 
 static void base_nav_cfg(void) {
-    set_nav_cfg("\"theme\":\"day\",\"guidance_x\":50,\"guidance_y\":100,"
+    set_nav_cfg("\"theme\":\"day\",\"x\":0,\"y\":0,\"width\":300,\"height\":200,"
+                "\"guidance_x\":50,\"guidance_y\":100,"
                 "\"guidance_width\":200,\"guidance_height\":80,"
                 "\"guidance_background_color\":\"#20304080\","
-                "\"guidance_background_radius\":0");
+                "\"guidance_background_radius\":0,\"guidance_padding_top\":0,"
+                "\"guidance_padding_bottom\":0");
 }
 
 static void base_music_cfg(void) {
@@ -199,6 +201,7 @@ static void base_music_cfg(void) {
 static void guidance_bg(void) {
     boot();
     base_nav_cfg();
+    set_nav_cfg("\"x\":0,\"y\":0,\"width\":10,\"height\":10");
     show_nav();
     update_nav("\"active\":true");
     assert(wd_canvas_get(&g_nav.cv, 100, 140) == 0x80203040u);
@@ -209,11 +212,37 @@ static void guidance_bg(void) {
 static void guidance_radius(void) {
     boot();
     base_nav_cfg();
-    set_nav_cfg("\"theme\":\"day\",\"guidance_background_radius\":20");
+    set_nav_cfg("\"x\":0,\"y\":0,\"width\":10,\"height\":10,\"theme\":\"day\","
+                "\"guidance_background_radius\":20");
     show_nav();
     update_nav("\"active\":true");
     assert(wd_canvas_get(&g_nav.cv, 50, 100) == 0u);
     assert(wd_canvas_get(&g_nav.cv, 150, 140) == 0x80203040u);
+}
+
+static void summary_bg(void) {
+    boot();
+    base_nav_cfg();
+    set_nav_cfg("\"guidance_x\":400,\"guidance_y\":400,\"guidance_width\":10,"
+                "\"guidance_height\":10");
+    show_nav();
+    update_nav("\"active\":true");
+    assert(wd_canvas_get(&g_nav.cv, 10, 10) == 0x80203040u);
+    assert(wd_canvas_get(&g_nav.cv, 299, 199) == 0x80203040u);
+    assert(wd_canvas_get(&g_nav.cv, 300, 10) == 0u);
+}
+
+static void summary_bg_padding(void) {
+    boot();
+    base_nav_cfg();
+    set_nav_cfg("\"guidance_x\":400,\"guidance_y\":400,\"guidance_width\":10,"
+                "\"guidance_height\":10,\"guidance_padding_top\":20,\"guidance_padding_bottom\":30");
+    show_nav();
+    update_nav("\"active\":true");
+    assert(wd_canvas_get(&g_nav.cv, 10, 10) == 0u);
+    assert(wd_canvas_get(&g_nav.cv, 10, 20) == 0x80203040u);
+    assert(wd_canvas_get(&g_nav.cv, 10, 169) == 0x80203040u);
+    assert(wd_canvas_get(&g_nav.cv, 10, 170) == 0u);
 }
 
 static void maneuver_icon(void) {
@@ -222,8 +251,9 @@ static void maneuver_icon(void) {
     set_nav_cfg("\"theme\":\"day\",\"guidance_background_color\":\"#00000000\"");
     show_nav();
     update_nav("\"active\":true,\"turn\":\"left\",\"distance_m\":500");
-    assert(count_color(&g_nav.cv, 58, 116, 106, 164, 0xFF000000u) > 0);
-    assert(count_color(&g_nav.cv, 114, 100, 250, 180, 0xFF000000u) > 0);
+    assert(count_color(&g_nav.cv, 58, 6, 142, 61, 0xFF000000u) > 0);
+    assert(count_color(&g_nav.cv, 120, 35, 125, 46, 0xFFA8B8C9u) > 0);
+    assert(count_alpha(&g_nav.cv, 8, 18, 39, 49) > 0);
 }
 
 static void lights_top_row(void) {
@@ -232,8 +262,9 @@ static void lights_top_row(void) {
     set_nav_cfg("\"theme\":\"day\",\"guidance_background_color\":\"#00000000\"");
     show_nav();
     update_nav("\"active\":true,\"lights\":[{\"color\":1,\"seconds\":30}]");
-    assert(count_color(&g_nav.cv, 0, 44, T_W, 92, 0xFFE53935u) > 0);
-    assert(count_color(&g_nav.cv, 0, 188, T_W, 236, 0xFFE53935u) == 0);
+    assert(count_color(&g_nav.cv, 115, 111, 145, 140, 0xFFE92D3Bu) > 0);
+    assert(count_color(&g_nav.cv, 115, 150, 145, 182, 0xFFE92D3Bu) == 0);
+    assert(count_color(&g_nav.cv, 118, 105, 181, 147, 0x29A8B8C9u) > 0);
 }
 
 static void lights_bottom_row(void) {
@@ -243,8 +274,8 @@ static void lights_bottom_row(void) {
                 "\"guidance_background_color\":\"#00000000\"");
     show_nav();
     update_nav("\"active\":true,\"lights\":[{\"color\":2,\"seconds\":5}]");
-    assert(count_color(&g_nav.cv, 0, 188, T_W, 236, 0xFF43A047u) > 0);
-    assert(count_color(&g_nav.cv, 0, 44, T_W, 92, 0xFF43A047u) == 0);
+    assert(count_color(&g_nav.cv, 137, 140, 163, 169, 0xFF008A64u) > 0);
+    assert(count_color(&g_nav.cv, 137, 111, 163, 134, 0xFF008A64u) == 0);
 }
 
 static void lanes_row(void) {
@@ -253,9 +284,13 @@ static void lanes_row(void) {
     set_nav_cfg("\"theme\":\"day\",\"guidance_background_color\":\"#00000000\"");
     show_nav();
     update_nav("\"active\":true,\"lanes\":[{\"directions\":\"straight\",\"active_directions\":"
-               "\"unknown\",\"recommended\":false},{\"directions\":\"left|uturn_left\","
+               "\"unknown\",\"recommended\":false},{\"directions\":\"left|uturn\","
                "\"active_directions\":\"left\",\"recommended\":true}]");
-    assert(count_color(&g_nav.cv, 0, 188, T_W, 236, 0xFF000000u) > 0);
+    assert(count_color(&g_nav.cv, 50, 100, 250, 180, 0x29A8B8C9u) == 0);
+    assert(count_color(&g_nav.cv, 149, 146, 152, 162, 0x28A8B8C9u) > 0);
+    assert(count_color(&g_nav.cv, 50, 100, 250, 180, 0x64A8B8C9u) == 0);
+    assert(count_color(&g_nav.cv, 151, 134, 193, 176, 0xFF000000u) > 0);
+    assert(count_color(&g_nav.cv, 106, 134, 148, 176, 0xFF000000u) == 0);
 }
 
 static void lanes_unknown_default(void) {
@@ -264,7 +299,8 @@ static void lanes_unknown_default(void) {
     set_nav_cfg("\"theme\":\"day\",\"guidance_background_color\":\"#00000000\"");
     show_nav();
     update_nav("\"active\":true,\"lanes\":[{\"directions\":\"variable\"}]");
-    assert(count_color(&g_nav.cv, 0, 188, T_W, 236, 0xFF000000u) > 0);
+    assert(count_color(&g_nav.cv, 134, 134, 164, 176, 0xFF000000u) > 0);
+    assert(count_color(&g_nav.cv, 50, 100, 250, 180, 0x64A8B8C9u) == 0);
 }
 
 static void lanes_absent_no_draw(void) {
@@ -273,7 +309,9 @@ static void lanes_absent_no_draw(void) {
     set_nav_cfg("\"theme\":\"day\",\"guidance_background_color\":\"#00000000\"");
     show_nav();
     update_nav("\"active\":true,\"lanes\":[{\"dir\":\"straight\"}]");
-    assert(count_color(&g_nav.cv, 0, 188, T_W, 236, 0xFF000000u) == 0);
+    assert(count_color(&g_nav.cv, 50, 100, 250, 180, 0x28A8B8C9u) == 0);
+    assert(count_color(&g_nav.cv, 50, 100, 250, 180, 0x64A8B8C9u) == 0);
+    assert(count_color(&g_nav.cv, 50, 100, 250, 180, 0x29A8B8C9u) == 0);
 }
 
 static void music_cover(void) {
@@ -313,12 +351,12 @@ static void lyric_colors(void) {
 static void progress_ratio(void) {
     boot();
     base_music_cfg();
-    set_music_cfg("\"show_progress\":true,\"progress_width\":8,\"progress_gap\":2");
+    set_music_cfg("\"show_progress\":true,\"progress_width\":0,\"progress_gap\":2");
     show_music();
     load_track("\"track_id\":\"t1\",\"lyrics\":[\"a\"],\"line_index\":0,"
                "\"duration_ms\":1000,\"position_ms\":250");
-    assert(wd_canvas_get(&g_music.cv, 120, 196) == 0xFF0D47A1u);
-    assert(wd_canvas_get(&g_music.cv, 200, 196) == 0xFF1E88E5u);
+    assert(wd_canvas_get(&g_music.cv, 50, 198) == 0xFF0D47A1u);
+    assert(wd_canvas_get(&g_music.cv, 150, 198) == 0xFF1E88E5u);
 }
 
 static void theme_auto_flip(void) {
@@ -423,6 +461,8 @@ struct Entry {
 static const struct Entry TABLE[] = {
     {"guidance_bg", guidance_bg},
     {"guidance_radius", guidance_radius},
+    {"summary_bg", summary_bg},
+    {"summary_bg_padding", summary_bg_padding},
     {"maneuver_icon", maneuver_icon},
     {"lights_top_row", lights_top_row},
     {"lights_bottom_row", lights_bottom_row},

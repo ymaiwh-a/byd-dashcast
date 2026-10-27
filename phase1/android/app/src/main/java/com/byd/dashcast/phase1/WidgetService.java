@@ -67,9 +67,9 @@ public final class WidgetService extends Service {
             return START_NOT_STICKY;
         }
         try {
+            startForeground(NOTIFICATION_ID, notification());
             UsbDevice device = UsbNcmSession.findDevice(this);
             ownedDevice = device.getDeviceName();
-            startForeground(NOTIFICATION_ID, notification());
             registerReceiver(detach, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED));
             receiverRegistered = true;
             NcmSessionHub.acquire(this);

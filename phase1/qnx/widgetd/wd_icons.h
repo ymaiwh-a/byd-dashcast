@@ -8,9 +8,9 @@
 extern "C" {
 #endif
 
-#define WD_ICON_SLOTS 135
-#define WD_ICON_W 48
-#define WD_ICON_H 48
+#define WD_ICON_SLOTS 136
+#define WD_ICON_W 96
+#define WD_ICON_H 96
 #define WD_ICON_PX (WD_ICON_W * WD_ICON_H)
 
 typedef struct {

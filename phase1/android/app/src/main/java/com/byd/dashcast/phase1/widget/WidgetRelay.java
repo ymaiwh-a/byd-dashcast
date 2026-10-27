@@ -833,6 +833,20 @@ public final class WidgetRelay {
                 || Ops.MUSIC_SHOW.equals(op) || Ops.MUSIC_HIDE.equals(op);
     }
 
+    public void applyNavConfig(final String body, final Runnable onOk, final Runnable onFail) {
+        final android.os.Handler main = new android.os.Handler(android.os.Looper.getMainLooper());
+        runPush("nav", Ops.NAV_CONFIG_SET, body,
+                onOk == null ? null : () -> main.post(onOk),
+                onFail == null ? null : () -> main.post(onFail));
+    }
+
+    public void applyMusicConfig(final String body, final Runnable onOk, final Runnable onFail) {
+        final android.os.Handler main = new android.os.Handler(android.os.Looper.getMainLooper());
+        runPush("music", Ops.MUSIC_CONFIG_SET, body,
+                onOk == null ? null : () -> main.post(onOk),
+                onFail == null ? null : () -> main.post(onFail));
+    }
+
     private void runPush(final String which, final String op, final String body, final Runnable onOk) {
         runPush(which, op, body, onOk, null);
     }

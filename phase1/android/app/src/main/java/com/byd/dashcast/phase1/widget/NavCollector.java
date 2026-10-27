@@ -239,23 +239,23 @@ public final class NavCollector {
             case 2: return "straight|left";
             case 3: return "right";
             case 4: return "straight|right";
-            case 5: return "uturn_left";
+            case 5: return "uturn";
             case 6: return "left|right";
             case 7: return "straight|left|right";
             case 8: return "uturn_right";
-            case 9: return "straight|uturn_left";
+            case 9: return "straight|uturn";
             case 10: return "straight|uturn_right";
-            case 11: return "left|uturn_left";
+            case 11: return "left|uturn";
             case 12: return "right|uturn_right";
-            case 13: return "straight|extend";
-            case 14: return "left|uturn_left|extend";
-            case 16: return "straight|left|uturn_left";
-            case 17: return "right|uturn_left";
-            case 18: return "left|uturn_left|right";
-            case 19: return "straight|right|uturn_left";
+            case 13: return "straight|continue";
+            case 14: return "left|uturn|continue";
+            case 16: return "straight|left|uturn";
+            case 17: return "right|uturn";
+            case 18: return "left|uturn|right";
+            case 19: return "straight|right|uturn";
             case 20: return "left|uturn_right";
             case 21: return "unknown";
-            case 23: return "variable";
+            case 23: return "unknown";
             default: return "unknown";
         }
     }

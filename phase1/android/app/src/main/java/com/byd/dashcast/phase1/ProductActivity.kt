@@ -23,6 +23,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.byd.dashcast.phase1.widget.ClusterState
 import com.byd.dashcast.phase1.widget.MusicListener
+import com.byd.dashcast.phase1.widget.LyricsPanel
+import com.byd.dashcast.phase1.widget.NavGuidePanel
 import com.byd.dashcast.phase1.widget.WidgetRelay
 
 /** Product launcher, implemented in Kotlin. Engineering tools are an explicit diagnostics-only route.
@@ -198,6 +200,8 @@ class ProductActivity : Activity() {
                 syncWidgetService()
             })
         }
+        body.addView(NavGuidePanel.build(this, !light), LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(14) })
+        body.addView(LyricsPanel.build(this, !light), LinearLayout.LayoutParams(-1, -2).apply { bottomMargin = dp(14) })
         card {
             addView(text("画面与外观", 26, true))
             addView(toggle("导航仪表布局：顶部状态、中央地图、底部数据", settings.underlay) { settings.underlay = it })

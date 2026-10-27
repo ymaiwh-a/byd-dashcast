@@ -180,19 +180,19 @@ public final class WidgetCfg {
         public int lyricLines = 3;
         public int musicLayout = 1;
         public int align = 0;
-        public int fontSize = 26;
+        public int fontSize = 23;
 
-        public int coverSize = 200;
+        public int coverSize = 120;
         public int anim = 0;
         public int transitionMs = 260;
         public String theme = "auto";
-        public int secondarySize = 20;
-        public int lineGap = 6;
+        public int secondarySize = 17;
+        public int lineGap = 11;
         public int beforeLines = 1;
         public int afterLines = 1;
-        public int titleSize = 22;
-        public int artistSize = 20;
-        public int coverGap = 12;
+        public int titleSize = 20;
+        public int artistSize = 0;
+        public int coverGap = 16;
         public int coverRadius = 13;
         public long color = 0x0D47A1FFL;
         public long previousColor = 0x1E88E5FFL;
@@ -201,19 +201,19 @@ public final class WidgetCfg {
         public long nightPrevColor = 0x81C784FFL;
         public long nightNextColor = 0x81C784FFL;
         public long backgroundColor = 0x00000000L;
-        public int backgroundRadius = 0;
-        public int backgroundPaddingTop = 0;
-        public int backgroundPaddingBottom = 0;
+        public int backgroundRadius = 40;
+        public int backgroundPaddingTop = 24;
+        public int backgroundPaddingBottom = 20;
         public int strokeWidth = 2;
         public long strokeColor = 0x000000FFL;
         public boolean showProgress = true;
         public int progressWidth = 0;
-        public int progressGap = 0;
+        public int progressGap = 8;
         public int lyricOffsetMs = 0;
     }
 
     public static final int NAV_DEF_X = 180, NAV_DEF_Y = 220, NAV_DEF_W = 500, NAV_DEF_H = 400;
-    public static final int MUSIC_DEF_X = 1080, MUSIC_DEF_Y = 200, MUSIC_DEF_W = 560, MUSIC_DEF_H = 400;
+    public static final int MUSIC_DEF_X = 1200, MUSIC_DEF_Y = 200, MUSIC_DEF_W = 500, MUSIC_DEF_H = 400;
 
     public static final int NAV_DEF_GX = 790, NAV_DEF_GY = 120, NAV_DEF_GW = 340, NAV_DEF_GH = 160;
 
@@ -227,11 +227,17 @@ public final class WidgetCfg {
         public int ugx = -1, ugy = -1, ugw = -1, ugh = -1;
         public boolean lightsOnTop = true;
         public long bgColor = 0x00000000L;
-        public int bgRadius = 0, padTop = 0, padBottom = 0;
+        public int bgRadius = 40, padTop = 24, padBottom = 20;
         public boolean showLights = true, showLanes = true, showAlerts = true;
         public int lanesTtl = 30, lightsTtl = 10, alertsTtl = 10;
         public String theme = "auto";
         public int opacity = 255;
+        public int lightSize = 18;
+        public int laneSize = 50;
+        public int fontSize = 24;
+        public int secondarySize = 20;
+        public int distanceSize = 40;
+        public int lineGap = 16;
     }
 
     public static String cfgToJson(Cfg c) {
@@ -356,6 +362,12 @@ public final class WidgetCfg {
             o.put("ugy", g.ugy);
             o.put("ugw", g.ugw);
             o.put("ugh", g.ugh);
+            o.put("lightSize", g.lightSize);
+            o.put("laneSize", g.laneSize);
+            o.put("fontSize", g.fontSize);
+            o.put("secondarySize", g.secondarySize);
+            o.put("distanceSize", g.distanceSize);
+            o.put("lineGap", g.lineGap);
             return o.toString();
         } catch (Throwable t) {
             return "";
@@ -392,6 +404,12 @@ public final class WidgetCfg {
         g.ugy = Json.i(o, "ugy", g.ugy);
         g.ugw = Json.i(o, "ugw", g.ugw);
         g.ugh = Json.i(o, "ugh", g.ugh);
+        g.lightSize = Json.i(o, "lightSize", g.lightSize);
+        g.laneSize = Json.i(o, "laneSize", g.laneSize);
+        g.fontSize = Json.i(o, "fontSize", g.fontSize);
+        g.secondarySize = Json.i(o, "secondarySize", g.secondarySize);
+        g.distanceSize = Json.i(o, "distanceSize", g.distanceSize);
+        g.lineGap = Json.i(o, "lineGap", g.lineGap);
     }
 
     public static String navConfigSet(Gd g) {
@@ -434,6 +452,12 @@ public final class WidgetCfg {
         sb.append(",\"lights_on_top\":").append(g.lightsOnTop ? "true" : "false");
         sb.append(",\"theme\":\"").append(g.theme).append('"');
         sb.append(",\"ttl_ms\":").append(clamp(g.ttlSec * 1000, 1000, 120000));
+        sb.append(",\"light_size\":").append(clamp(g.lightSize, 8, 96));
+        sb.append(",\"lane_size\":").append(clamp(g.laneSize, 8, 96));
+        sb.append(",\"font_size\":").append(clamp(g.fontSize, 12, 96));
+        sb.append(",\"secondary_size\":").append(clamp(g.secondarySize, 10, 72));
+        sb.append(",\"distance_size\":").append(clamp(g.distanceSize, 16, 120));
+        sb.append(",\"line_gap\":").append(clamp(g.lineGap, 0, 40));
         return sb.toString();
     }
 

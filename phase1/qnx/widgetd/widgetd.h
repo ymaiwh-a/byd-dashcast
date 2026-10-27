@@ -94,6 +94,12 @@ typedef struct {
     int guidance_bg_radius;
     int guidance_pad_top;
     int guidance_pad_bottom;
+    int light_size;
+    int lane_size;
+    int font_size;
+    int secondary_size;
+    int distance_size;
+    int line_gap;
 } WdNavCfg;
 
 typedef struct {

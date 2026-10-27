@@ -4,8 +4,8 @@ import struct
 import sys
 
 STRIDE = 0x2400
-ICON_W = 48
-ICON_H = 48
+ICON_W = 96
+ICON_H = 96
 A1 = 0x805BD78
 A2 = 0x8143990
 A_SLOTS = 103
@@ -140,14 +140,15 @@ ALERT = [
 ]
 
 LANE = [
-    ("straight", 101, -1),
-    ("left", 100, -1),
-    ("right", 99, -1),
-    ("uturn_left", 103, 104),
-    ("uturn_right", 106, 107),
-    ("extend", 105, -1),
-    ("default", 108, -1),
+    ("straight", 129, -1),
+    ("left", 130, -1),
+    ("right", 131, -1),
+    ("uturn", 132, -1),
+    ("uturn_right", 133, -1),
+    ("left_uturn", 135, -1),
 ]
+
+EXTRA_ICONS = ["gb_left_uturn.hex"]
 
 
 def sections(buf):
@@ -175,8 +176,8 @@ def slot_pixels(buf, ro, va):
     px = []
     for y in range(ICON_H):
         for x in range(ICON_W):
-            b, g, r, a = raw[(y * ICON_W + x) * 4:(y * ICON_W + x) * 4 + 4]
-            px.append((a << 24) | (r << 16) | (g << 8) | b)
+            a = raw[y * ICON_W + x]
+            px.append(a << 24)
     return px
 
 
@@ -203,6 +204,12 @@ def main():
         slots.append(slot_pixels(buf, ro, A1 + k * STRIDE))
     for k in range(B_SLOTS):
         slots.append(slot_pixels(buf, ro, A2 + k * STRIDE))
+    here0 = os.path.dirname(os.path.abspath(__file__))
+    for fname in EXTRA_ICONS:
+        text = open(os.path.join(here0, fname), "r").read()
+        data = bytes.fromhex("".join(text.split()))
+        assert len(data) == ICON_W * ICON_H
+        slots.append([b << 24 for b in data])
     blob = []
     offs = [0]
     for px in slots:

@@ -1104,8 +1104,8 @@
     },
     {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ProductActivity.kt",
-      "bytes": 21447,
-      "sha256": "246d7439d11bc861ab23c8568a1515f8f93e61f44766b369261d1a0f1aed7f7e",
+      "bytes": 21793,
+      "sha256": "1be46678361e37e7ad507fc7a9f6c49024d150d06bb41760a356c847ac271f3f",
       "origin": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ProductActivity.kt",
       "transformations": []
     },
@@ -1408,7 +1408,7 @@
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
       "bytes": 5062,
-      "sha256": "86eeb276831da7293ec1cfd0bdd55e193280c50314b6b8a68b5d0249246d318f"
+      "sha256": "9223e63d110fac40f5f39ee2eb56779e4e774e472a1bebf4d531bbf5dccc0a30"
     },
     {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/ncm/LogHub.java",
@@ -1523,6 +1523,13 @@
       "sha256": "9c1fa47c135c345972c794e27e6d184771de8fe03c5ccb9bad16e4bcd7a9fd79"
     },
     {
+      "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/ColorPad.java",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 3696,
+      "sha256": "04de10d8d6eeeeb5981976812e1f605ccdf05903914a7834a6106104b6f5fa93"
+    },
+    {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/CrashHandler.java",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
@@ -1565,6 +1572,13 @@
       "sha256": "9bc888121f8d2dbaf2a60268581f7cb87b98642cb98cd0e4bf05cf1ae1e2d1cb"
     },
     {
+      "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/LyricsPanel.java",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 22158,
+      "sha256": "748ceacc9092336b21824c95ddc7f69fdfda554ad0525d1f37a1269334e1be74"
+    },
+    {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/MusicCollector.java",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
@@ -1589,8 +1603,15 @@
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/NavCollector.java",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 15113,
-      "sha256": "a81126e81d5fef852be648d81986173b3051a289d10a9c0f56b6d76360f7ae1f"
+      "bytes": 15076,
+      "sha256": "198a23c35b781862db03a717d4ae188380b8425dafb9fdaec461a75b8e0f1d79"
+    },
+    {
+      "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/NavGuidePanel.java",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 27186,
+      "sha256": "2b20d99730ef50615b742ada41c13c62347f58bee5234c89e866edeae828e612"
     },
     {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/NavReceiver.java",
@@ -1642,11 +1663,18 @@
       "sha256": "65d76e41825db05af40131712843b5ed6509bf1c2bdfaa38f90fc9ef31d9023d"
     },
     {
+      "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/Ui.java",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 65249,
+      "sha256": "45c93deeb6964504e6243878e947edb5627f720807512f973e8b9f93d6e95e7a"
+    },
+    {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/WidgetCfg.java",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 20210,
-      "sha256": "38e02f7e3769ff4e292a862b39c491744dda17eb5e179612ad3d784b39712f53"
+      "bytes": 21516,
+      "sha256": "e4c24d1b8095636ca205a3491525fb5a3a285197096c26dcc25bf79160e62dcd"
     },
     {
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/WidgetData.java",
@@ -1673,8 +1701,8 @@
       "path": "phase1/android/app/src/main/java/com/byd/dashcast/phase1/widget/WidgetRelay.java",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 39101,
-      "sha256": "94d6b133da980f27884eb695b1c9850486fe4370df0c889fa87e363ffb5c3d6e"
+      "bytes": 39863,
+      "sha256": "012fbe6718ab9ada64301ca576850f66a1ad198a560665029913a799b36de23e"
     },
     {
       "path": "phase1/android/app/src/main/res/drawable/ic_launcher.xml",
@@ -2540,22 +2568,22 @@
       "path": "phase1/qnx/widgetd/tests/wd_icons_test.c",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 4791,
-      "sha256": "d31ebff7de7049031ad6dfa0ce8ea0db7393ed63561c2944f2b99c261388ea8e"
+      "bytes": 5493,
+      "sha256": "8edac817ffa2fc51c7d7a80d9ee7e50fc88778de2b479170d82599a0e957d2b1"
     },
     {
       "path": "phase1/qnx/widgetd/tests/wd_render_test.c",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 14995,
-      "sha256": "886b0acdb5a586d36764330af19a6832afde2a9b2f29e0be534e9591538eb084"
+      "bytes": 16936,
+      "sha256": "eba14a19265698fbb4b23dfcfec3a2a50eb25c6478a5ea5628dcfd2ebc7c593a"
     },
     {
       "path": "phase1/qnx/widgetd/tests/widgetd_test.c",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
       "bytes": 28382,
-      "sha256": "f40587357d7785bf38cdaba8ceaeab257aaf56a9f37f78d076e6ce2355465faf"
+      "sha256": "ecf4b5b98107c2c966c010cdbc3f3e1f9f4d6df932a071a2b0d4a556fcf23694"
     },
     {
       "path": "phase1/qnx/widgetd/wd_canvas.c",
@@ -2605,22 +2633,22 @@
       "transformations": [
         "EXTRACT_ONLY_BOUNDED_ICON_SLOTS_RLE_ENCODE"
       ],
-      "bytes": 1345652,
-      "sha256": "fedc8d8c3aeae74f3948995f38a52780103e3648f1bc527c54b4ba6704c9d8fe"
+      "bytes": 1714377,
+      "sha256": "74e21803abfd710bff197b145d0870b55da25b530a41c506ada500ad2eab057e"
     },
     {
       "path": "phase1/qnx/widgetd/wd_icons.h",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
       "bytes": 749,
-      "sha256": "b08f250e2f858169cd250b74ebab91a82cc02170dabf348f0bd21a5365e29e4f"
+      "sha256": "91698f4dd572f76f591ad487c3db58757a43ca263582dd40c784a0476e1f7d54"
     },
     {
       "path": "phase1/qnx/widgetd/wd_render.c",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 18067,
-      "sha256": "0f1a7bf01443fc20fc6d681971596632828d0b31a64b16646aba80d9e9bbdc35"
+      "bytes": 28592,
+      "sha256": "1bfef5e68157a26706bc3f9b1aae0a6cc8736e70af15fa4813c67df9074414bc"
     },
     {
       "path": "phase1/qnx/widgetd/wd_render.h",
@@ -2647,15 +2675,15 @@
       "path": "phase1/qnx/widgetd/widgetd.c",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 81355,
-      "sha256": "7a5b8c48a75496de1a5d3363ecf1d7e0dc7ad550834ab75aed6acd9be87fd0d0"
+      "bytes": 83817,
+      "sha256": "abee308cf966578a73bd890f6237e5adcb91e26a962296a3c559db24a9419f18"
     },
     {
       "path": "phase1/qnx/widgetd/widgetd.h",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 4594,
-      "sha256": "402dfdd555d9d1b4898e412cba72cd83433651722086b6afb21cf263a09d7971"
+      "bytes": 4717,
+      "sha256": "e1c9443e40ef3867ce223209b8716b70aeddd0a9219f54bcb0f0a68a205e6b94"
     },
     {
       "path": "phase1/qnx/widgetd/widgetd_main.c",
@@ -2803,8 +2831,15 @@
       "transformations": [
         "OPERATES_ON_LOCAL_FIRMWARE_INPUTS_EXCLUDED_FROM_PUBLIC_TREE"
       ],
-      "bytes": 10028,
-      "sha256": "9972c14fcf62efddaeab58f2360d7050306bebc6294e78e862ce8cc6e24b16e5"
+      "bytes": 10255,
+      "sha256": "43c224edd43c386118d3b014f1fe1f80d43a80209e51095aced3072d049d1846"
+    },
+    {
+      "path": "tools/gb_left_uturn.hex",
+      "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
+      "transformations": [],
+      "bytes": 18528,
+      "sha256": "cfb6e8c17a5da1ff18b328f86a7cf8cc03f35965152a98d36aff7f3394596bb3"
     },
     {
       "path": "tools/test_native_background.py",
@@ -2817,8 +2852,8 @@
       "path": "tools/test_wd_icons.py",
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
-      "bytes": 2835,
-      "sha256": "82e9ebb0fa5217ba2accf92e8793e22462dba4cfb1b01c199b9eaea706a3edbe"
+      "bytes": 2982,
+      "sha256": "b8c3054ed1667b5dd742ce92afbdf290bceddf8571475efcf2f60e201d4dffe1"
     },
     {
       "path": "tools/test_widgetd.py",
@@ -2944,7 +2979,7 @@
       "origin": "REVIEWED_AFTER_INITIAL_EXPORT",
       "transformations": [],
       "bytes": 65,
-      "sha256": "9effa3d42b69d41652ea026e4c4e42c8f6aaba7ff14380432c06b5be6005fa81"
+      "sha256": "e4ca387fd353663dc2127f3c0fe29c9d1b7545473c10a5485b5dc5c42a386875"
     }
   ]
 }

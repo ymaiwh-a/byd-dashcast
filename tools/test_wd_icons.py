@@ -39,7 +39,9 @@ def run(root, output):
     digest = hashlib.sha256(decoded.read_bytes()).hexdigest()
     if digest != golden:
         raise ValueError("Decoded icon stream sha256 mismatch")
-    if decoded.stat().st_size != 135 * 48 * 48 * 4:
+    header = (source / "wd_icons.h").read_text(encoding="utf-8")
+    slot_count = int(re.search(r"#define WD_ICON_SLOTS (\d+)", header)[1])
+    if decoded.stat().st_size != slot_count * 96 * 96 * 4:
         raise ValueError("Unexpected decoded byte count")
     report = dict(status="PASS_HOST_WD_ICONS", tests=len(names), cases=names,
                   decoded_sha256=digest,

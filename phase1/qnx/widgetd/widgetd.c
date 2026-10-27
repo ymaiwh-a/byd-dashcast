@@ -572,22 +572,31 @@ static void nav_cfg_defaults(WdNavCfg *g) {
     g->guidance_width = 340;
     g->guidance_height = 160;
     strcpy(g->guidance_bg_color, "#00000000");
+    g->guidance_bg_radius = 40;
+    g->guidance_pad_top = 10;
+    g->guidance_pad_bottom = 10;
+    g->light_size = 18;
+    g->lane_size = 50;
+    g->font_size = 24;
+    g->secondary_size = 20;
+    g->distance_size = 40;
+    g->line_gap = 16;
 }
 
 static void music_cfg_defaults(WdMusicCfg *m) {
     memset(m, 0, sizeof(*m));
-    m->x = 1080;
+    m->x = 1200;
     m->y = 200;
-    m->width = 560;
+    m->width = 500;
     m->height = 400;
     m->opacity = 255;
     strcpy(m->theme, "auto");
     m->ttl_ms = 20000;
     m->lyric_lines = 3;
-    m->font_size = 26;
-    m->secondary_size = 20;
-    m->title_size = 22;
-    m->artist_size = 20;
+    m->font_size = 23;
+    m->secondary_size = 17;
+    m->title_size = 20;
+    m->artist_size = 0;
     m->stroke_width = 2;
     strcpy(m->stroke_color, "#000000FF");
     m->show_cover = true;
@@ -595,12 +604,13 @@ static void music_cfg_defaults(WdMusicCfg *m) {
     m->show_metadata = true;
     m->lyric_animation = false;
     m->music_layout = 2;
-    m->cover_size = 200;
+    m->cover_size = 120;
     m->cover_radius = 13;
-    m->line_gap = 6;
+    m->line_gap = 11;
     m->before_lines = 1;
     m->after_lines = 1;
-    m->cover_gap = 12;
+    m->cover_gap = 16;
+    m->progress_gap = 8;
     m->transition_ms = 260;
     strcpy(m->background_color, "#00000000");
     strcpy(m->day_color, "#0D47A1FF");
@@ -715,6 +725,12 @@ static void out_nav_cfg_obj(WdOut *o, char lead, const char *k, const WdNavCfg *
     out_kv_int(o, "\"guidance_background_radius\"", g->guidance_bg_radius);
     out_kv_int(o, "\"guidance_padding_top\"", g->guidance_pad_top);
     out_kv_int(o, "\"guidance_padding_bottom\"", g->guidance_pad_bottom);
+    out_kv_int(o, "\"light_size\"", g->light_size);
+    out_kv_int(o, "\"lane_size\"", g->lane_size);
+    out_kv_int(o, "\"font_size\"", g->font_size);
+    out_kv_int(o, "\"secondary_size\"", g->secondary_size);
+    out_kv_int(o, "\"distance_size\"", g->distance_size);
+    out_kv_int(o, "\"line_gap\"", g->line_gap);
     out_char(o, '}');
 }
 
@@ -840,6 +856,12 @@ static void apply_nav_cfg(WdNavCfg *g, const WdParser *p, const WdJson *obj) {
     if (jint(p, obj, "guidance_padding_bottom", &v, &present) && present) {
         g->guidance_pad_bottom = (int)v;
     }
+    if (jint(p, obj, "light_size", &v, &present) && present) g->light_size = (int)v;
+    if (jint(p, obj, "lane_size", &v, &present) && present) g->lane_size = (int)v;
+    if (jint(p, obj, "font_size", &v, &present) && present) g->font_size = (int)v;
+    if (jint(p, obj, "secondary_size", &v, &present) && present) g->secondary_size = (int)v;
+    if (jint(p, obj, "distance_size", &v, &present) && present) g->distance_size = (int)v;
+    if (jint(p, obj, "line_gap", &v, &present) && present) g->line_gap = (int)v;
 }
 
 static void apply_music_cfg(WdMusicCfg *m, const WdParser *p, const WdJson *obj) {
@@ -1049,7 +1071,8 @@ static const char *const NAV_CONFIG_KEYS[] = {
     "x", "y", "width", "height", "opacity", "theme", "ttl_ms", "show_lanes", "show_lights",
     "show_alerts", "lights_on_top", "lanes_ttl_ms", "lights_ttl_ms", "alerts_ttl_ms",
     "guidance_x", "guidance_y", "guidance_width", "guidance_height", "guidance_background_color",
-    "guidance_background_radius", "guidance_padding_top", "guidance_padding_bottom"
+    "guidance_background_radius", "guidance_padding_top", "guidance_padding_bottom",
+    "light_size", "lane_size", "font_size", "secondary_size", "distance_size", "line_gap"
 };
 
 static const char *const MUSIC_CONFIG_KEYS[] = {
@@ -1730,6 +1753,36 @@ static const char *validate_nav_config(const WdParser *p, const WdJson *root, Wd
     if (present) {
         if (!range_i64(v, 0, 60)) return "invalid_range_or_type";
         next->guidance_pad_bottom = (int)v;
+    }
+    if (!jint(p, root, "light_size", &v, &present)) return "invalid_range_or_type";
+    if (present) {
+        if (!range_i64(v, 8, 96)) return "invalid_range_or_type";
+        next->light_size = (int)v;
+    }
+    if (!jint(p, root, "lane_size", &v, &present)) return "invalid_range_or_type";
+    if (present) {
+        if (!range_i64(v, 8, 96)) return "invalid_range_or_type";
+        next->lane_size = (int)v;
+    }
+    if (!jint(p, root, "font_size", &v, &present)) return "invalid_range_or_type";
+    if (present) {
+        if (!range_i64(v, 12, 96)) return "invalid_range_or_type";
+        next->font_size = (int)v;
+    }
+    if (!jint(p, root, "secondary_size", &v, &present)) return "invalid_range_or_type";
+    if (present) {
+        if (!range_i64(v, 10, 72)) return "invalid_range_or_type";
+        next->secondary_size = (int)v;
+    }
+    if (!jint(p, root, "distance_size", &v, &present)) return "invalid_range_or_type";
+    if (present) {
+        if (!range_i64(v, 16, 120)) return "invalid_range_or_type";
+        next->distance_size = (int)v;
+    }
+    if (!jint(p, root, "line_gap", &v, &present)) return "invalid_range_or_type";
+    if (present) {
+        if (!range_i64(v, 0, 40)) return "invalid_range_or_type";
+        next->line_gap = (int)v;
     }
     return NULL;
 }
